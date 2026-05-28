@@ -1,0 +1,30 @@
+- name: Base setup for all nodes
+  hosts: all
+  become: true
+
+  tasks: 
+    - name: Install Docker
+      shell: curl -fsSL https://get.docker.com | sh
+      args:
+        creates: /usr/bin/docker
+      retries: 3
+      delay: 30
+      register: result
+      until: result.rc == 0
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Install Docker Compose plugin
+      apt:
+        name: docker-compose-plugin
+        state: present
+
+    - name: Install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes

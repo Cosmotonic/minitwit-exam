@@ -1,0 +1,60 @@
+networks:
+  itu-minitwit-network:
+    external: false
+    name: itu-minitwit-network
+
+services:
+  minitwitserver:
+    build:
+      context: .
+      dockerfile: docker/minitwit/Dockerfile
+    image: cosmotonic/minitwitserver
+    container_name: minitwit
+    ports:
+      - "5001:5000"
+    networks:
+      - itu-minitwit-network
+    depends_on:
+      - grafana
+      - prometheus
+
+  minitwitclient:
+    build:
+      context: .
+      dockerfile: docker/minitwit_client/Dockerfile
+    image: cosmotonic/minitwitclient
+    networks:
+      - itu-minitwit-network
+    depends_on:
+      - minitwitserver
+      - grafana
+      - prometheus
+
+  prometheus:
+    build: 
+      dockerfile: ./Dockerfile
+      context: ./monitoring/prometheus
+    image: prometheus_image
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    networks:
+      - itu-minitwit-network
+
+  grafana:
+    build: 
+      dockerfile: ./Dockerfile
+      context: ./monitoring/grafana
+    image: grafana_image
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - itu-minitwit-network
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage: {}
