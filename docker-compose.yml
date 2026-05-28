@@ -11,14 +11,14 @@ services:
     image: cosmotonic/minitwitserver
     container_name: minitwit
     ports:
-      - "5001:5000"
+      - "5001:5000" # HOST:CONTAINER
     networks:
       - itu-minitwit-network
     depends_on:
       - grafana
       - prometheus
 
-  minitwitclient:
+  minitwitclient: # Run minitwit_client_sim
     build:
       context: .
       dockerfile: docker/minitwit_client/Dockerfile
