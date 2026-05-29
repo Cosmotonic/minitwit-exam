@@ -26,4 +26,4 @@ ansible-playbook -i inventory.ini playbook.yml
 
 
 
-# Addign comment to pull request on github. 
+# added python assert 
