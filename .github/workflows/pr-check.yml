@@ -10,5 +10,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Say hello
+      - name: Say hello kasper
         run: echo "CI pipeline is running"
