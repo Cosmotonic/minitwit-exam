@@ -1,5 +1,6 @@
+
 - name: Base setup for all nodes
-  hosts: all
+  hosts: swarm,db,monitoring
   become: true
 
   tasks: 
@@ -23,18 +24,5 @@
         name: docker-compose-plugin
         state: present
 
-    - name: Install git
-      apt:
-        name: git
-        state: present
-        update_cache: yes
 
-    - name: Clone repository
-      git:
-        repo: "https://github.com/Cosmotonic/minitwit-exam.git"
-        dest: /opt/minitwit-exam
 
-    - name: Start containers
-      command: docker compose up -d 
-      args:
-        chdir: /opt/minitwit-exam

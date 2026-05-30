@@ -1,0 +1,25 @@
+
+
+- name: Deploy app stack
+  hosts: swarm
+  become: true
+  tags: [deploy]
+
+  tasks:
+
+    - name: Install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+        
+    - name: Clone repository
+      git:
+        repo: "https://github.com/Cosmotonic/minitwit-exam.git"
+        dest: /opt/minitwit-exam
+
+    - name: Start containers
+      command: docker compose up -d 
+      args:
+        chdir: /opt/minitwit-exam
+
