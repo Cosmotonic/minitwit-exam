@@ -34,9 +34,9 @@ sleep 15
 cd ../ansible
 
 # Provision server + deploy containers
-# ansible-playbook -i inventory.ini playbook.yml
-ansible-playbook -i inventory.digitalocean.yml site.yml
-
+# ansible-playbook -i inventory.ini playbook.yml                         # Den gamle
+# ansible-playbook -i inventory.digitalocean.yml site.yml                # Uden hostkey check til false. 
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.digitalocean.yml site.yml # Nu skal du ikke skrive "yes"
 
 
 # added python assert 

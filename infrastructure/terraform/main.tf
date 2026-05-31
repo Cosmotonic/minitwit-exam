@@ -76,3 +76,88 @@ output "db_exam" {
 output "monitoring_exam" {
   value = digitalocean_droplet.monitoring_exam.ipv4_address
 }
+
+
+# Firewall for all droplets tagged "swarm"
+resource "digitalocean_firewall" "swarm" {
+  name = "swarm-firewall"
+  tags = ["swarm"]
+
+  # SSH access from your computer
+  # Used by Ansible and manual SSH login
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "22"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Docker Swarm manager communication
+  # Managers use this port to coordinate the cluster
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "2377"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Docker Swarm node discovery (TCP)
+  # Nodes use this to find and communicate with each other
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "7946"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Docker Swarm node discovery (UDP)
+  # Same purpose as above, but uses UDP traffic
+  inbound_rule {
+    protocol         = "udp"
+    port_range       = "7946"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Docker Swarm overlay network
+  # Used when containers communicate across different nodes
+  inbound_rule {
+    protocol         = "udp"
+    port_range       = "4789"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Allow all outbound TCP traffic
+  # Needed for apt update, docker pull, git clone, etc.
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "1-65535"
+    destination_addresses = ["0.0.0.0/0"]
+  }
+
+  # Allow all outbound UDP traffic
+  # Needed for DNS lookups and other network communication
+  outbound_rule {
+    protocol              = "udp"
+    port_range            = "1-65535"
+    destination_addresses = ["0.0.0.0/0"]
+  }
+
+  # public open for swarm nodes during  learning. 
+  inbound_rule {
+  protocol         = "tcp"
+  port_range       = "5001"
+  source_addresses = ["0.0.0.0/0"]
+  }
+
+  inbound_rule {
+  protocol         = "tcp"
+  port_range       = "9090"
+  source_addresses = ["0.0.0.0/0"]
+  }
+
+  inbound_rule {
+  protocol         = "tcp"
+  port_range       = "3000"
+  source_addresses = ["0.0.0.0/0"]
+  }
+
+
+}
+
